@@ -1,0 +1,46 @@
+menu "Wi-Fi Setup"
+
+    config ESP_WIFI_SSID
+        string "WiFi SSID"
+        default "myssid"
+        help
+            SSID (network name) for the ziggy to connect to.
+
+    config ESP_WIFI_PASSWORD
+        string "WiFi Password"
+        default "mypassword"
+        help
+            WiFi password (WPA or WPA2) for the ziggy to use.
+
+    config ESP_MAXIMUM_RETRY
+        int "Maximum retry"
+        default 5
+        help
+            Set the Maximum retry to avoid station reconnecting to the AP unlimited when the AP is really inexistent.
+endmenu
+
+menu "MQTT Setup"
+
+    config BROKER_URL
+        string "Broker URL"
+        default "mqtt://mqtt.eclipse.org"
+        help
+            URL of the broker to connect to
+
+endmenu
+
+menu "Meter setup"
+
+    config METER_BUILDING_NAME
+        string "Name of the building the meter is being used on"
+        default "Teste"
+        help
+            Identifier for each of the meters
+
+    config METER_NUMBER
+        int "Meter number on the same building"
+        default 0
+        help
+            Identifier for each of the meters
+        
+endmenu
