@@ -15,18 +15,7 @@
 
 #include "../components/driver_mqtt/mqtt_driver.h"
 #include "../components/driver_wifi/wifi_driver.h"
-
-
-// TODO: Properly define this in a component
-typedef struct measurements
-{
-    struct rms
-    {
-        float voltage;
-        float current;
-    } rms;
-    float harmonics;
-} measurements;
+#include "../components/driver_ade/electricalMeas.h"
 
 static char sMqttTopic[80];
 static char sMqttMessage[80];
@@ -67,7 +56,6 @@ void app_main()
     wifi_init_sta();
     // Initialize MQTT
     mqtt_app_start();
-    // mqtt_publish("/ziggy/teste", "FUNCIONA PUVAVINHO 1 todos", 0, 1, 0);
 
     //start communication task
     xTaskCreate(task_comm, "task_comm", 2048, NULL, 10, NULL);
