@@ -16,8 +16,29 @@
 #define MQTT_CONNECTED_BIT  BIT0
 #define MQTT_FAIL_BIT       BIT1
 
+#define QU(x) #x
+#define QUH(x) QU(x)
+#define RMS_TOPIC "/Building" QUH(CONFIG_METER_BUILDING_NAME) "/meter" QUH(CONFIG_METER_NUMBER) "/rms"
+
+/** 
+ * @brief   Start MQTT and connect to broker. This will send a message indicating the
+ *          building which the meter is located and the meter number.
+*/
 void mqtt_app_start(void);
+
+/** 
+ * @brief   Publish to broker function
+ * @param   sMqttTopic      Topic for mqtt
+ * @param   sMqttMessage    Payload (or message) to be sent
+ * @param   len             Length of message. 0 to autodetermine.
+ * @param   qos             Quality of service (0, 1 or 2)
+ * @param   retain          Retain boolean
+ * @return  none
+*/
 void mqtt_publish(char * sMqttTopic, char * sMqttMessage, int len, int qos, int retain);
-//TODO: Add a subscribe function if needed. But first determine how we get the data
+
+/** 
+ * TODO: Add subscribe function. Then, the data received should be sent to a task via the callback handler.
+*/
 
 #endif /* MQTT_DRIVER_H */

@@ -35,7 +35,7 @@ menu "Meter setup"
         string "Name of the building the meter is being used on"
         default "Teste"
         help
-            Identifier for each of the meters
+            Identifier for each building
 
     config METER_NUMBER
         int "Meter number on the same building"

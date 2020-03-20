@@ -19,7 +19,7 @@ static esp_err_t mqtt_event_handler_cb(esp_mqtt_event_handle_t event)
         case MQTT_EVENT_CONNECTED:
             ESP_LOGI(TAG, "MQTT_EVENT_CONNECTED");
             
-            sprintf(sMqttTopic, "/ziggy/teste");
+            sprintf(sMqttTopic, "/ziggy/default"); //! TODO: CHANGE TO /smartmeter/default
             sprintf(sMqttMessage, "Meter %d is now connected to building %s", CONFIG_METER_NUMBER, CONFIG_METER_BUILDING_NAME);
 
             msg_id = esp_mqtt_client_publish(client, sMqttTopic, sMqttMessage, 0, 1, 0);
@@ -59,7 +59,7 @@ static esp_err_t mqtt_event_handler_cb(esp_mqtt_event_handle_t event)
 }
 
 static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_t event_id, void *event_data) {
-    ESP_LOGI(TAG, "Event dispatched from event loop base=%s, event_id=%d", base, event_id);
+    ESP_LOGD(TAG, "Event dispatched from event loop base=%s, event_id=%d", base, event_id);
     mqtt_event_handler_cb(event_data);
 }
 /**

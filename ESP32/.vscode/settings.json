@@ -7,5 +7,13 @@
     "[c]": {
         "editor.quickSuggestions": true
     },
-    "C_Cpp.intelliSenseEngineFallback": "Enabled"
+    "C_Cpp.intelliSenseEngineFallback": "Enabled",
+    "files.associations": {
+        "main.h": "c",
+        "task.h": "c",
+        "freertos.h": "c",
+        "nvs_flash.h": "c",
+        "mqtt_driver.h": "c",
+        "event_groups.h": "c"
+    }
 } 
