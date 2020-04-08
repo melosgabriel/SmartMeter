@@ -1,14 +1,12 @@
 #ifndef ELECTRICAL_MEAS_H
 #define ELECTRICAL_MEAS_H
+#if 0 // this file is going to be deleted
 /**
  * @struct  phaseWire   Values for each of the phases and the neutral wire (which might have current)
  */
 typedef struct phaseWire
 {
-    float A;
-    float B;
-    float C;
-    float N;
+    float A, B, C, N;
 } phaseWire;
 
 /**
@@ -115,5 +113,5 @@ typedef struct electricalMeas
     powerQuality PQ;
 
 } electricalMeas;
-
+#endif /** #if 0 */
 #endif /** ELECTICAL_MEAS_H */

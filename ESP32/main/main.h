@@ -7,5 +7,6 @@
 
 //* Declaring freeRTOS tasks here
 void task_communication(void * arg);
+void task_acquire(void * arg);
 
 #endif /** __MAIN_H */

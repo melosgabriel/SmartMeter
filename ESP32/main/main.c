@@ -42,6 +42,7 @@ void app_main()
     //* Initialize tasks
 
     xTaskCreate(task_communication, "Communication task for MQTT", 2048, NULL, 10, NULL); // MQTT
+    xTaskCreate(task_acquire, "Acquisition task for ADE7880", 4096, NULL, 10, NULL); // ADE7880
     xTaskCreate(test_function, "teste", 2048, NULL, 10, NULL); //TODO acquisition
     
     

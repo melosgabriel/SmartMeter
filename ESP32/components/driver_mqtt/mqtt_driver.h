@@ -16,10 +16,6 @@
 #define MQTT_CONNECTED_BIT  BIT0
 #define MQTT_FAIL_BIT       BIT1
 
-#define QU(x) #x
-#define QUH(x) QU(x)
-#define RMS_TOPIC "/Building" QUH(CONFIG_METER_BUILDING_NAME) "/meter" QUH(CONFIG_METER_NUMBER) "/rms"
-
 /** 
  * @brief   Start MQTT and connect to broker. This will send a message indicating the
  *          building which the meter is located and the meter number.
