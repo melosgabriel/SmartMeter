@@ -17,6 +17,8 @@
         "event_groups.h": "c",
         "i2c.h": "c",
         "em.h": "c",
-        "sdkconfig.h": "c"
+        "sdkconfig.h": "c",
+        "*.inc": "cpp",
+        "*.ipp": "cpp"
     }
 } 
