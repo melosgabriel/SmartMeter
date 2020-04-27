@@ -9,6 +9,7 @@ void task_acquire(void * arg)
     uint8_t i= 1;
     int j;
     ESP_ERROR_CHECK(i2c_master_init());
+    ade_init();
     uint8_t msg[4] = {0, 1, 255, 7};
 
     for(;;)
@@ -19,6 +20,8 @@ void task_acquire(void * arg)
             printf("I2C failed: %#08x\n", j);
         } 
         else i++;
+        vTaskDelay(1 / portTICK_RATE_MS);
+        //i2c_master_read_slave(msg, 4);
         vTaskDelay(5000 / portTICK_RATE_MS);
     }
 
