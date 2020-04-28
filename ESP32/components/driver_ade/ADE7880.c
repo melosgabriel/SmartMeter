@@ -1,6 +1,37 @@
 #include "ADE7880.h"
 #include "../../build/config/sdkconfig.h"
 
+/** POWER MODE */
+
+esp_err_t ade_set_powermode(ade_powermode_t powermode)
+{
+    esp_err_t ret;
+    switch (powermode)
+    {
+    case ADE_PM0:
+        ret = gpio_set_level(ADE_PM0_GPIO, 1);
+        ret = ret | gpio_set_level(ADE_PM1_GPIO, 0);
+        break;
+    case ADE_PM1:
+        ret = gpio_set_level(ADE_PM0_GPIO, 0);
+        ret = ret | gpio_set_level(ADE_PM1_GPIO, 0);
+        break;
+    case ADE_PM2:
+        ret = gpio_set_level(ADE_PM0_GPIO, 0);
+        ret = ret | gpio_set_level(ADE_PM1_GPIO, 1);
+        break;
+    case ADE_PM3:
+        ret = gpio_set_level(ADE_PM0_GPIO, 1);
+        ret = ret | gpio_set_level(ADE_PM1_GPIO, 1);
+        break;
+
+    default: /** Set PM0 */
+        ret = ESP_FAIL;
+        break;
+    }
+    return ret;
+}
+
 /** BASIC COMMUNICATION FUNCTIONS FOR I²C */
 
 esp_err_t i2c_master_init()
@@ -200,6 +231,17 @@ static uint32_t quick_log2(uint32_t num){
 
 esp_err_t ade_init(void)
 {
+    // Configure ADE GPIOs and set powermode
+    gpio_config_t io_conf;
+    io_conf.intr_type = GPIO_PIN_INTR_DISABLE;
+    io_conf.mode = GPIO_MODE_OUTPUT;
+    io_conf.pin_bit_mask = ADE_GPIO_PIN_SEL;
+    io_conf.pull_down_en = 0;
+    io_conf.pull_up_en = 0;
+    gpio_config(&io_conf);
+
+    ade_set_powermode(ADE_PM0);
+
     // Choose I2C as the main interface and lock
     ade_write_reg_8(ADE_CONFIG2, 0x02);
 
@@ -259,3 +301,18 @@ esp_err_t ade_init(void)
 
     return 0;
 }
+
+/**
+ * @brief   Function to extend the sign of a number. Useful when reading signed numbers padded with zeros
+ * @param   val     Old number, padded with zeros
+ * @param   numbits Number of bits on the old number. A 24-bit signed integer has numbits = 24.
+ * @return  int     The sign-extended number.
+ */
+static int signextension(int val, int numbits)
+{
+    int newval;
+    if( val & (1 << (numbits-1) ) ) newval = (0xFFFFFFFF << numbits) | val;
+    else newval = val;
+    return newval;
+}
+

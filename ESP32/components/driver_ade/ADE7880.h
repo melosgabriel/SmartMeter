@@ -9,6 +9,10 @@
 #include "ADE_REG.h"
 
 /** ADE Defines */
+#define ADE_PM0_GPIO        25
+#define ADE_PM1_GPIO        26
+#define ADE_GPIO_PIN_SEL    ((1ULL<<ADE_PM0_GPIO) | (1ULL<<ADE_PM1_GPIO))
+
 // PGA Gains, must be 0, 1, 2, 4, 8 or 16
 #define ADE_PGA_IGAIN       0   /**< PGA1 */
 #define ADE_PGA_NGAIN       0   /**< PGA2 */
@@ -37,6 +41,20 @@
 #define ACK_VAL             0x0         /*!< I2C ack value */
 #define NACK_VAL            0x1         /*!< I2C nack value */
 #define DEBUG               1
+
+typedef enum ade_powermode_t{
+    ADE_PM0 = 0,
+    ADE_PM1,
+    ADE_PM2,
+    ADE_PM3
+} ade_powermode_t;
+
+/**
+ * @brief   Function to set the ADE powermode, based on datasheet
+ * @param   powermode   ADE_PM0, PM1, PM2 or PM3. Check datasheet
+ * @return  None
+ */
+esp_err_t ade_set_powermode(ade_powermode_t powermode);
 
 /**
  * @brief   Init I²C device as master (21 - SDA; 22 - SCL; 100 kHz; no pull.)
@@ -142,6 +160,7 @@ esp_err_t ade_init(void);
  * Read RMS
  * Read power
  * Test with DEBUG=1 + arduino
+ * Configure power mode
  */
 
 #endif /** __ADE7880_H__ */
