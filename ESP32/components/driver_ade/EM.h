@@ -10,7 +10,7 @@ typedef struct EM_Wire
     float A, B, C, N; /**< Values for each phase */
 } EM_Wire;
 
-//* ***************************** STRUCTS FOR RMS *******************************************
+//* ***************************** STRUCTS FOR RMS *******************************************/
 
 /**
  * @struct  EM_RMS  RMS values (voltage and current) for each of the phases. The union makes the memory addressable
@@ -30,7 +30,7 @@ typedef struct EM_RMS
     };
 } EM_RMS;
 
-//* ***************************** STRUCTS FOR POWER *******************************************
+//* ***************************** STRUCTS FOR POWER *******************************************/
 
 /**
  * @struct  EM_PowerTypes  Each kind of power in the triangle
@@ -68,7 +68,7 @@ typedef struct EM_Power
     };    
 } EM_Power;
 
-//* ***************************** STRUCTS FOR GENERAL MEASUREMENTS *******************************************
+//* ***************************** STRUCTS FOR GENERAL MEASUREMENTS *******************************************/
 
 typedef struct EM_Meas {
     EM_RMS RMS;

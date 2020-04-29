@@ -1,5 +1,6 @@
 #include "ADE7880.h"
 #include "../../build/config/sdkconfig.h"
+#include <string.h> /**< For memset */
 
 /** POWER MODE */
 
@@ -170,8 +171,12 @@ esp_err_t ade_read_reg(ade_reg_t addr, uint8_t * data, size_t size)
     uintxto8(addr, 2, addrReg8);
     i2c_master_write(cmd, addrReg8, 2, ACK_CHECK_EN);
 
-    #if DEBUG
+    #if DEBUG /** Give arduino some time and a stop condition */
         i2c_master_stop(cmd);
+        i2c_master_cmd_begin(I2C_PORT, cmd, 100 / portTICK_RATE_MS);
+        vTaskDelay(100 /portTICK_RATE_MS);
+        i2c_cmd_link_delete(cmd);
+        cmd = i2c_cmd_link_create();
     #endif
 
     /** SECOND PART */
@@ -195,6 +200,7 @@ int ade_read_reg_8(ade_reg_t addr)
 {
     int num_bytes = 1;
     uint8_t data[num_bytes];
+    memset(data, 0, num_bytes);
     ade_read_reg(addr, data, num_bytes);
     int ret = uint8toint(data, num_bytes);
     return ret;
@@ -204,6 +210,7 @@ int ade_read_reg_16(ade_reg_t addr)
 {
     int num_bytes = 2;
     uint8_t data[num_bytes];
+    memset(data, 0, num_bytes);
     ade_read_reg(addr, data, num_bytes);
     int ret = uint8toint(data, num_bytes);
     return ret;
@@ -213,6 +220,7 @@ int ade_read_reg_32(ade_reg_t addr)
 {
     int num_bytes = 4;
     uint8_t data[num_bytes];
+    memset(data, 0, num_bytes);
     ade_read_reg(addr, data, num_bytes);
     int ret = uint8toint(data, num_bytes);
     return ret;
@@ -316,3 +324,45 @@ static int signextension(int val, int numbits)
     return newval;
 }
 
+/**
+ * @brief   Function to read RMS voltage
+ * @param   addr    Address of register to read
+ * @return  float   Voltage read from register
+ */
+static float read_rms_v(ade_reg_t addr)
+{
+    int reg_val = ade_read_reg_32(addr);
+    reg_val = signextension(reg_val, 24);
+    float ret = reg_val * (ADE_FULLSCALE_VAL / ADE_FULLSCALE_REG) / ADE_VOLTAGE_ATT;
+    return ret;
+}
+
+/**
+ * @brief   Function to read RMS current
+ * @param   addr    Address of register to read
+ * @return  float   Current read from register
+ */
+static float read_rms_i(ade_reg_t addr)
+{
+    int reg_val = ade_read_reg_32(addr);
+    reg_val = signextension(reg_val, 24);
+    float ret = reg_val * (ADE_FULLSCALE_VAL / ADE_FULLSCALE_REG) * ADE_CURRENT_FULL;
+    return ret;
+}
+
+void ade_read_rms(EM_RMS * rms)
+{
+    rms->sVoltage.A = read_rms_v(ADE_AVRMS);
+    rms->sVoltage.B = read_rms_v(ADE_BVRMS);
+    rms->sVoltage.C = read_rms_v(ADE_BVRMS);
+
+    rms->sCurrent.A = read_rms_i(ADE_AIRMS);
+    rms->sCurrent.B = read_rms_i(ADE_BIRMS);
+    rms->sCurrent.C = read_rms_i(ADE_CIRMS);
+    rms->sCurrent.N = read_rms_i(ADE_NIRMS);
+}
+
+void ade_read_power(EM_Power * power)
+{
+    
+}

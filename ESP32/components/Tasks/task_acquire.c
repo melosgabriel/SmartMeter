@@ -6,23 +6,19 @@
 
 void task_acquire(void * arg)
 {
-    uint8_t i= 1;
     int j;
+    int reg_val = 0;
     ESP_ERROR_CHECK(i2c_master_init());
-    ade_init();
-    uint8_t msg[4] = {0, 1, 255, 7};
+    EM_RMS rms;
+    //ade_init();
 
     for(;;)
     {   
-        j = ade_write_reg(ADE_OILVL, (uint8_t *)msg, 4);
-        if(j)
-        {
-            printf("I2C failed: %#08x\n", j);
-        } 
-        else i++;
-        vTaskDelay(1 / portTICK_RATE_MS);
-        //i2c_master_read_slave(msg, 4);
-        vTaskDelay(5000 / portTICK_RATE_MS);
+        ade_read_rms(&rms);
+        reg_val = ade_read_reg_32(ADE_CIRMS);
+        printf("Value read: %d\n", reg_val); 
+        printf("RMS Voltage: %f\n", rms.sVoltage.A); 
+        vTaskDelay(3000 / portTICK_RATE_MS);
     }
 
 }

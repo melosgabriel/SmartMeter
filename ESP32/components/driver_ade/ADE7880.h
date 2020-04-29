@@ -9,25 +9,11 @@
 #include "ADE_REG.h"
 
 /** ADE Defines */
+
+/** GPIO Defines */ 
 #define ADE_PM0_GPIO        25
 #define ADE_PM1_GPIO        26
 #define ADE_GPIO_PIN_SEL    ((1ULL<<ADE_PM0_GPIO) | (1ULL<<ADE_PM1_GPIO))
-
-// PGA Gains, must be 0, 1, 2, 4, 8 or 16
-#define ADE_PGA_IGAIN       0   /**< PGA1 */
-#define ADE_PGA_NGAIN       0   /**< PGA2 */
-#define ADE_PGA_VGAIN       0   /**< PGA3 */
-#define ADE_USE_ROGOWSKI    0
-#define ADE_USE_60HZ        1
-
-#define ADE_PMAX_VAL        0x19CE5DE /**< From datasheet: instataneous power when inputs are at full scale */
-#define ADE_FS_VAL          1024000 /** Frequency at which the energy is accumulated */
-#define ADE_WTHR_VAL        0x03 /**< Default value. For this one and the following, see app note AN-1171, page 5 (Rev. A). */
-#define ADE_VARTHR_VAL      0x03 /**< Default value */
-#define ADE_VATHR_VAL       0x03 /**< Default value */    
-#define ADE_VLEVEL_VAL      0x38000 /**< Default value */
-#define ADE_VNOM_VAL        0x23C354  /** From eq. 42, VNOM = V/Vfs * 3766572 = 220*sqrt(2)/500 * 3766572 */
-#define ADE_CFXDEN_VAL      0x0DB3 /**< Based on AN-1171. Calibrate later. */
 
 /** I²C Defines */
 #define SLAVE_7B_ADDRESS    0b0111000 /**< ADE7880 7-bit address, as described on the datasheet */
@@ -41,6 +27,29 @@
 #define ACK_VAL             0x0         /*!< I2C ack value */
 #define NACK_VAL            0x1         /*!< I2C nack value */
 #define DEBUG               1
+
+/** PGA Gains, must be 0, 1, 2, 4, 8 or 16 */ 
+#define ADE_PGA_IGAIN       0   /**< PGA1 */
+#define ADE_PGA_NGAIN       0   /**< PGA2 */
+#define ADE_PGA_VGAIN       0   /**< PGA3 */
+#define ADE_USE_ROGOWSKI    0
+#define ADE_USE_60HZ        1
+
+/** Configuration register values*/
+#define ADE_PMAX_VAL        0x19CE5DE /**< From datasheet: instataneous power when inputs are at full scale */
+#define ADE_FS_VAL          1024000 /** Frequency at which the energy is accumulated */
+#define ADE_WTHR_VAL        0x03 /**< Default value. For this one and the following, see app note AN-1171, page 5 (Rev. A). */
+#define ADE_VARTHR_VAL      0x03 /**< Default value */
+#define ADE_VATHR_VAL       0x03 /**< Default value */    
+#define ADE_VLEVEL_VAL      0x38000 /**< Default value */
+#define ADE_VNOM_VAL        0x23C354  /** From eq. 42, VNOM = V/Vfs * 3766572 = 220*sqrt(2)/500 * 3766572 */
+#define ADE_CFXDEN_VAL      0x0DB3 /**< Based on AN-1171. Calibrate later. */
+
+/** ADE Readings */
+#define ADE_FULLSCALE_REG   5326737 /**< Max numeric value (positive/negative) corresponding to a max voltage at input */
+#define ADE_FULLSCALE_VAL   0.5f /**< Max voltage at the ADC input */
+#define ADE_VOLTAGE_ATT     (1.0f / 1001.0f) /**< Voltage attenuation */
+#define ADE_CURRENT_FULL    49.4975f /**< Peak full scale current */
 
 typedef enum ade_powermode_t{
     ADE_PM0 = 0,
@@ -155,12 +164,24 @@ int ade_read_reg_32(ade_reg_t addr);
  */
 esp_err_t ade_init(void);
 
+/** 
+ * @brief   Function to read RMS values
+ * @param   rms     EM_RMS. Check EM.h. Structure to hold RMS values
+ * @return  None
+*/
+void ade_read_rms(EM_RMS * rms);
+
+/** 
+ * @brief   Function to read power values
+ * @param   rms     EM_Power. Check EM.h. Structure to hold power values
+ * @return  None
+*/
+void ade_read_power(EM_Power * power);
+
 /**
- * convert to float -> static?
- * Read RMS
  * Read power
- * Test with DEBUG=1 + arduino
- * Configure power mode
+ * Code harmonics
+ * Code power quality
  */
 
 #endif /** __ADE7880_H__ */

@@ -20,7 +20,7 @@ static void test_function(void * args)
     while(1)
     {
         printf("so testando uma coisa...\n");
-        vTaskDelay(2000 / portTICK_RATE_MS);
+        vTaskDelay(8000 / portTICK_RATE_MS);
     }
 }
 
@@ -43,7 +43,7 @@ void app_main()
 
     // xTaskCreate(task_communication, "Communication task for MQTT", 2048, NULL, 10, NULL); // MQTT
     xTaskCreate(task_acquire, "Acquisition task for ADE7880", 4096, NULL, 10, NULL); // ADE7880
-    xTaskCreate(test_function, "teste", 2048, NULL, 10, NULL); //TODO acquisition
+    xTaskCreate(test_function, "teste", 2048, NULL, 10, NULL);
     
     
     // while(1){
