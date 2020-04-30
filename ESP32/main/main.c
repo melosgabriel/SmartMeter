@@ -13,7 +13,13 @@
 
 #include "../components/driver_mqtt/mqtt_driver.h"
 #include "../components/driver_wifi/wifi_driver.h"
-#include "../components/driver_ade/electricalMeas.h"
+#include "../components/driver_ade/EM.h"
+
+// Variables from main.h
+QueueHandle_t FIFO_Acq_to_Comm;
+
+TaskHandle_t xTaskCommHandle;
+TaskHandle_t xTaskAcqHandle;
 
 static void test_function(void * args)
 {
@@ -39,10 +45,12 @@ void app_main()
     wifi_init_sta(); // Initialize Wi-Fi
     mqtt_app_start(); // Initialize MQTT
 
-    //* Initialize tasks
+    //* Initialize Queue
+    FIFO_Acq_to_Comm = xQueueCreate(2, sizeof(EM_Meas));
 
-    // xTaskCreate(task_communication, "Communication task for MQTT", 2048, NULL, 10, NULL); // MQTT
-    xTaskCreate(task_acquire, "Acquisition task for ADE7880", 4096, NULL, 10, NULL); // ADE7880
+    //* Initialize tasks
+    xTaskCreate(task_communication, "Communication task for MQTT", 2048, NULL, 10, &xTaskCommHandle); // MQTT
+    xTaskCreate(task_acquire, "Acquisition task for ADE7880", 4096, NULL, 10, &xTaskAcqHandle); // ADE7880
     xTaskCreate(test_function, "teste", 2048, NULL, 10, NULL);
     
     

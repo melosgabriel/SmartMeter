@@ -2,6 +2,8 @@
  * ElectricalMeas Class
  */
 
+#ifndef __EM_H__
+#define __EM_H__
 /**
  * @struct  EM_Wire
  */
@@ -74,3 +76,5 @@ typedef struct EM_Meas {
     EM_RMS RMS;
     EM_Power Power;
 } EM_Meas;
+
+#endif /** __EM_H__ */

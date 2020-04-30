@@ -354,7 +354,7 @@ void ade_read_rms(EM_RMS * rms)
 {
     rms->sVoltage.A = read_rms_v(ADE_AVRMS);
     rms->sVoltage.B = read_rms_v(ADE_BVRMS);
-    rms->sVoltage.C = read_rms_v(ADE_BVRMS);
+    rms->sVoltage.C = read_rms_v(ADE_CVRMS);
 
     rms->sCurrent.A = read_rms_i(ADE_AIRMS);
     rms->sCurrent.B = read_rms_i(ADE_BIRMS);

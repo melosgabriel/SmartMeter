@@ -4,9 +4,11 @@
 #include "../../main/main.h"
 #include "../driver_ade/ADE7880.h"
 
+QueueHandle_t FIFO_Acq_to_Comm;
+TaskHandle_t xTaskCommHandle;
+
 void task_acquire(void * arg)
 {
-    int j;
     int reg_val = 0;
     ESP_ERROR_CHECK(i2c_master_init());
     EM_RMS rms;
@@ -15,9 +17,12 @@ void task_acquire(void * arg)
     for(;;)
     {   
         ade_read_rms(&rms);
-        reg_val = ade_read_reg_32(ADE_CIRMS);
+        reg_val = ade_read_reg_32(ADE_AFIRMSOS);
         printf("Value read: %d\n", reg_val); 
-        printf("RMS Voltage: %f\n", rms.sVoltage.A); 
+
+        // Send values to the communication task
+        xQueueSend( FIFO_Acq_to_Comm, &rms, 10 / portTICK_RATE_MS ); 
+        xTaskNotify(xTaskCommHandle, ADE_MEASURE_OK, eSetBits); // Notify the other task
         vTaskDelay(3000 / portTICK_RATE_MS);
     }
 

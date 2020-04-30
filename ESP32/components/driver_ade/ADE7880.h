@@ -1,5 +1,5 @@
-#ifndef ADE7880_H
-#define ADE7880_H
+#ifndef __ADE7880_H__
+#define __ADE7880_H__
 
 #include "freertos/FreeRTOS.h"
 #include "driver/i2c.h"
@@ -49,7 +49,7 @@
 #define ADE_FULLSCALE_REG   5326737 /**< Max numeric value (positive/negative) corresponding to a max voltage at input */
 #define ADE_FULLSCALE_VAL   0.5f /**< Max voltage at the ADC input */
 #define ADE_VOLTAGE_ATT     (1.0f / 1001.0f) /**< Voltage attenuation */
-#define ADE_CURRENT_FULL    49.4975f /**< Peak full scale current */
+#define ADE_CURRENT_FULL    49.4975f /**< Peak full scale current. Irms = 35, Ip = 35 * sqrt(2) */
 
 typedef enum ade_powermode_t{
     ADE_PM0 = 0,
