@@ -267,7 +267,7 @@ static uint32_t quick_log2(uint32_t num)
 
 esp_err_t ade_init(void)
 {
-	// Configure ADE GPIOs and set powermode
+	// Configure ADE GPIOs
 	gpio_config_t io_conf;
 
 	io_conf.intr_type = GPIO_PIN_INTR_DISABLE;
@@ -277,6 +277,12 @@ esp_err_t ade_init(void)
 	io_conf.pull_up_en = 0;
 	gpio_config(&io_conf);
 
+    // Reset ADE
+    gpio_set_level(ADE_RESET_GPIO, 0);
+    vTaskDelay(3000 / portTICK_RATE_MS);
+    gpio_set_level(ADE_RESET_GPIO, 1);
+
+    // Set Power Mode
 	ade_set_powermode(ADE_PM0);
 
 	// Choose I2C as the main interface and lock

@@ -10,14 +10,15 @@ TaskHandle_t xTaskCommHandle;
 void task_acquire(void * arg)
 {
     int reg_val = 0;
+    uint8_t val[4];
     ESP_ERROR_CHECK(i2c_master_init());
     EM_RMS rms;
-    //ade_init();
+    ade_init();
 
     for(;;)
     {   
         ade_read_rms(&rms);
-        reg_val = ade_read_reg_32(ADE_AFIRMSOS);
+        reg_val = ade_read_reg(ADE_AVRMS, val, 4);
         printf("Value read: %d\n", reg_val); 
 
         // Send values to the communication task

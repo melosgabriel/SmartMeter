@@ -13,7 +13,8 @@
 /** GPIO Defines */ 
 #define ADE_PM0_GPIO        25
 #define ADE_PM1_GPIO        26
-#define ADE_GPIO_PIN_SEL    ((1ULL<<ADE_PM0_GPIO) | (1ULL<<ADE_PM1_GPIO))
+#define ADE_RESET_GPIO      27
+#define ADE_GPIO_PIN_SEL    ((1ULL<<ADE_PM0_GPIO) | (1ULL<<ADE_PM1_GPIO) | (1ULL<<ADE_RESET_GPIO))
 
 /** I²C Defines */
 #define SLAVE_7B_ADDRESS    0b0111000 /**< ADE7880 7-bit address, as described on the datasheet */
@@ -179,9 +180,11 @@ void ade_read_rms(EM_RMS * rms);
 void ade_read_power(EM_Power * power);
 
 /**
+ * TODO:
  * Read power
  * Code harmonics
  * Code power quality
+ * Code interruptions
  */
 
 #endif /** __ADE7880_H__ */
