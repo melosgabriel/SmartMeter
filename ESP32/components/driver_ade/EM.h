@@ -39,7 +39,7 @@ typedef struct EM_RMS
  */
 struct EM_PowerTypes
 {
-    EM_Wire active, reactive, apparent; /**< This order is important for array indexing */
+    EM_Wire apparent, active, reactive; /**< This order is important for array indexing */
 };
 
 /** 

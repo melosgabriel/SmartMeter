@@ -51,6 +51,7 @@
 #define ADE_FULLSCALE_VAL   0.5f /**< Max voltage at the ADC input */
 #define ADE_VOLTAGE_ATT     (1.0f / 1001.0f) /**< Voltage attenuation */
 #define ADE_CURRENT_FULL    49.4975f /**< Peak full scale current. Irms = 35, Ip = 35 * sqrt(2) */
+#define ADE_PMAX            27059678 /**< Instantaneous power when inputs at full scale and in phase */
 
 typedef enum ade_powermode_t{
     ADE_PM0 = 0,
@@ -178,6 +179,14 @@ void ade_read_rms(EM_RMS * rms);
  * @return  None
 */
 void ade_read_power(EM_Power * power);
+
+/** 
+ * @brief   Function to acquire all measurements
+ * @param   meas     EM_Meas. Check EM.h. Structure to hold power values
+ * @return  None
+*/
+void ade_acquire(EM_Meas * meas);
+
 
 /**
  * TODO:

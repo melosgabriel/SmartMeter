@@ -9,7 +9,8 @@ QueueHandle_t FIFO_Acq_to_Comm;
 
 // MQTT
 static char phaseNames[4] = {'A', 'B', 'C', 'N'};
-static const char * rmsNames[2] = {"Current", "Voltage"}; 
+static const char * rmsNames[2] = {"Current", "Voltage"};
+static const char * powerNames[3] = {"Apparent", "Active", "PF"};
 
 static char sMqttTopic[80];
 static char sMqttMessage[80];
@@ -35,7 +36,7 @@ void task_communication(void *arg)
         if(ulNotifiedValue == ADE_MEASURE_OK)
         {
             /** Receiving the values */
-            xQueueReceive(FIFO_Acq_to_Comm, &testVal.RMS, (100/portTICK_PERIOD_MS) );
+            xQueueReceive(FIFO_Acq_to_Comm, &testVal, (100/portTICK_PERIOD_MS) );
 
             #if DEBUG
                 printf("RMS Voltage A: %f\n", testVal.RMS.sVoltage.A); 
@@ -55,6 +56,17 @@ void task_communication(void *arg)
                                                     i < 4 ? testVal.RMS.aCurrent[i] : testVal.RMS.aVoltage[i%4]);
                 mqtt_publish(sMqttTopic,sMqttMessage,0,1,0);
             }
+
+            /** Sending Power Values */
+            sprintf(sMqttTopic, "%s/Power", meterName);
+            for(int i=0;i<9;i++){
+            sprintf(sMqttMessage, "%s %c = %f", i < 3 ? powerNames[0] : (i < 6 ? powerNames[1] : powerNames[2]), 
+                                                phaseNames[i%3],
+                                                i < 3 ? testVal.Power.aTotal[0][i] : 
+                                                i < 6 ? testVal.Power.aTotal[1][i%3] : testVal.Power.aPowerFactor[i%3]);
+            mqtt_publish(sMqttTopic,sMqttMessage,0,1,0);
+            }
+
         }
     }
 }

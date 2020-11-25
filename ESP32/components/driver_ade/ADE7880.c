@@ -379,7 +379,7 @@ static float read_rms_v(ade_reg_t addr)
 
 	reg_val = signextension(reg_val, 24);
 
-	return reg_val * (ADE_FULLSCALE_VAL / ADE_FULLSCALE_REG) /
+	return reg_val * ( 1.0f  / ADE_FULLSCALE_REG) /
 		ADE_VOLTAGE_ATT;
 }
 
@@ -394,7 +394,7 @@ static float read_rms_i(ade_reg_t addr)
 
 	reg_val = signextension(reg_val, 24);
 
-	return reg_val * (ADE_FULLSCALE_VAL / ADE_FULLSCALE_REG) *
+	return reg_val * ( 1.0f / ADE_FULLSCALE_REG) *
 		ADE_CURRENT_FULL;
 }
 
@@ -409,7 +409,53 @@ void ade_read_rms(EM_RMS *rms)
 	rms->sCurrent.N = read_rms_i(ADE_NIRMS);
 }
 
-void ade_read_power(EM_Power *power)
+/**
+ * @brief   Function to read Instant Power
+ * @param   addr    Address of register to read
+ * @return  float   Power read from register
+ */
+static float read_p(ade_reg_t addr)
 {
+	int reg_val = ade_read_reg_32(addr);
+
+	reg_val = signextension(reg_val, 24);
+
+	return reg_val / 1092.0f; // (ADE_PMAX *  ADE_FULLSCALE_VAL / ADE_VOLTAGE_ATT * ADE_CURRENT_FULL);
 }
 
+/**
+ * @brief   Function to read Power Factor
+ * @param   addr    Address of register to read
+ * @return  float   Power factor read from register between -1 and 1
+ */
+static float read_pf(ade_reg_t addr)
+{
+	uint16_t reg_val = ade_read_reg_16(addr);
+
+	return reg_val / 32768.0f;
+}
+
+
+void ade_read_power(EM_Power *power)
+{
+    // Active power
+    power->sTotal.active.A = read_p(ADE_AWATT);
+    power->sTotal.active.B = read_p(ADE_BWATT);
+    power->sTotal.active.C = read_p(ADE_CWATT);
+
+    // Apparent power
+    power->sTotal.apparent.A = read_p(ADE_AVA);
+    power->sTotal.apparent.B = read_p(ADE_BVA);
+    power->sTotal.apparent.C = read_p(ADE_CVA);
+
+    power->sPowerFactor.A = read_pf(ADE_APF);
+    power->sPowerFactor.B = read_pf(ADE_BPF);
+    power->sPowerFactor.C = read_pf(ADE_CPF);    
+    
+}
+
+void ade_acquire(EM_Meas * meas)
+{
+    ade_read_rms(&meas->RMS);
+    ade_read_power(&meas->Power);
+}
