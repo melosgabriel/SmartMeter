@@ -1,1 +1,822 @@
-[{"id":"4212209b.e007d","type":"tab","label":"SmartMeter","disabled":false,"info":""},{"id":"46da98a7.f95538","type":"debug","z":"4212209b.e007d","name":"","active":false,"tosidebar":true,"console":false,"tostatus":false,"complete":"payload","targetType":"msg","x":630,"y":220,"wires":[]},{"id":"1facdce5.57c363","type":"mqtt in","z":"4212209b.e007d","name":"","topic":"/ziggy/default","qos":"1","datatype":"auto","broker":"18e3ce0.9131e32","x":290,"y":220,"wires":[["46da98a7.f95538"]]},{"id":"9b70c7d4.bd59a8","type":"mqtt in","z":"4212209b.e007d","name":"RMS","topic":"/ziggy/BuildingTeste/+/RMS","qos":"1","datatype":"auto","broker":"18e3ce0.9131e32","x":270,"y":380,"wires":[["9de66355.42a3e","1d27101.efb4cf"]]},{"id":"f026ea18.078918","type":"ui_chart","z":"4212209b.e007d","name":"","group":"edbbdc1f.b0ac5","order":1,"width":0,"height":0,"label":"Voltage","chartType":"line","legend":"true","xformat":"HH:mm:ss","interpolate":"linear","nodata":"","dot":false,"ymin":"0","ymax":"300","removeOlder":1,"removeOlderPoints":"","removeOlderUnit":"60","cutout":0,"useOneColor":false,"colors":["#1f77b4","#00a800","#ff7f0e","#f90000","#98df8a","#d62728","#ff9896","#9467bd","#c5b0d5"],"useOldStyle":false,"outputs":1,"x":640,"y":440,"wires":[[]]},{"id":"9de66355.42a3e","type":"function","z":"4212209b.e007d","name":"read_i","func":"meterTopic = msg.topic.split(\"/\")\n\nif (meterTopic[3] == flow.get(\"meter\")){\n    meas = msg.payload.split(\" \", 4)\n    \n    if(meas[0]==\"Current\"){\n        msg.topic = meas[1]\n        msg.payload = parseFloat(meas[3])\n        return msg;\n    }\n}\n\n","outputs":1,"noerr":0,"x":450,"y":380,"wires":[["6b22735d.f8ba8c"]]},{"id":"1d27101.efb4cf","type":"function","z":"4212209b.e007d","name":"read_v","func":"meas = msg.payload.split(\" \", 4)\n\nif(meas[0]==\"Voltage\"){\n    msg.topic = meas[1]\n    msg.payload = parseFloat(meas[3])\n    return msg;\n}\n\n","outputs":1,"noerr":0,"x":450,"y":440,"wires":[["f026ea18.078918"]]},{"id":"6b22735d.f8ba8c","type":"ui_chart","z":"4212209b.e007d","name":"","group":"43534d39.313e94","order":1,"width":0,"height":0,"label":"Current","chartType":"line","legend":"true","xformat":"HH:mm:ss","interpolate":"linear","nodata":"","dot":false,"ymin":"","ymax":"","removeOlder":1,"removeOlderPoints":"","removeOlderUnit":"60","cutout":0,"useOneColor":false,"colors":["#1f77b4","#008000","#ff7f0e","#f40000","#98df8a","#d62728","#ff9896","#9467bd","#c5b0d5"],"useOldStyle":false,"outputs":1,"x":640,"y":380,"wires":[[]]},{"id":"3db21131.5d64fe","type":"change","z":"4212209b.e007d","name":"MeterChoice","rules":[{"t":"set","p":"meter","pt":"flow","to":"payload","tot":"msg"}],"action":"","property":"","from":"","to":"","reg":false,"x":630,"y":300,"wires":[[]]},{"id":"8accf1f0.b331d","type":"ui_dropdown","z":"4212209b.e007d","name":"","label":"","tooltip":"","place":"Select meter","group":"e8aa5b0c.fe3d28","order":1,"width":0,"height":0,"passthru":true,"options":[{"label":"Meter 0","value":"meter0","type":"str"},{"label":"Meter 1","value":"meter1","type":"str"},{"label":"Meter 2","value":"meter2","type":"str"},{"label":"Meter 3","value":"meter3","type":"str"}],"payload":"","topic":"/meterchoose/","x":280,"y":300,"wires":[["3db21131.5d64fe"]]},{"id":"18e3ce0.9131e32","type":"mqtt-broker","z":"","name":"Public-eclipse","broker":"mqtt://mqtt.eclipse.org","port":"1883","clientid":"","usetls":false,"compatmode":false,"keepalive":"60","cleansession":true,"birthTopic":"","birthQos":"0","birthPayload":"","closeTopic":"","closeQos":"0","closePayload":"","willTopic":"","willQos":"0","willPayload":""},{"id":"edbbdc1f.b0ac5","type":"ui_group","z":"","name":"Voltage","tab":"45912c5.cb220d4","order":2,"disp":false,"width":"10","collapse":false},{"id":"43534d39.313e94","type":"ui_group","z":"","name":"Current","tab":"45912c5.cb220d4","order":3,"disp":false,"width":10,"collapse":false},{"id":"e8aa5b0c.fe3d28","type":"ui_group","z":"","name":"SelectMeter","tab":"45912c5.cb220d4","order":1,"disp":true,"width":3,"collapse":false},{"id":"45912c5.cb220d4","type":"ui_tab","z":"","name":"RMS","icon":"dashboard","disabled":false,"hidden":false}]
+[
+    {
+        "id": "4212209b.e007d",
+        "type": "tab",
+        "label": "SmartMeter",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "46da98a7.f95538",
+        "type": "debug",
+        "z": "4212209b.e007d",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "x": 630,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "1facdce5.57c363",
+        "type": "mqtt in",
+        "z": "4212209b.e007d",
+        "name": "",
+        "topic": "/ziggy/default",
+        "qos": "1",
+        "datatype": "auto",
+        "broker": "18e3ce0.9131e32",
+        "x": 290,
+        "y": 80,
+        "wires": [
+            [
+                "46da98a7.f95538"
+            ]
+        ]
+    },
+    {
+        "id": "9b70c7d4.bd59a8",
+        "type": "mqtt in",
+        "z": "4212209b.e007d",
+        "name": "RMS",
+        "topic": "/ziggy/BuildingTeste/+/RMS",
+        "qos": "1",
+        "datatype": "auto",
+        "broker": "18e3ce0.9131e32",
+        "x": 270,
+        "y": 400,
+        "wires": [
+            [
+                "9de66355.42a3e",
+                "1d27101.efb4cf"
+            ]
+        ]
+    },
+    {
+        "id": "f026ea18.078918",
+        "type": "ui_chart",
+        "z": "4212209b.e007d",
+        "name": "",
+        "group": "edbbdc1f.b0ac5",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "label": "Voltage (V)",
+        "chartType": "line",
+        "legend": "true",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "150",
+        "ymax": "250",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "60",
+        "cutout": 0,
+        "useOneColor": false,
+        "colors": [
+            "#1f77b4",
+            "#00a800",
+            "#ff7f0e",
+            "#f90000",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "useOldStyle": false,
+        "outputs": 1,
+        "x": 650,
+        "y": 440,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "9de66355.42a3e",
+        "type": "function",
+        "z": "4212209b.e007d",
+        "name": "read_i",
+        "func": "meterTopic = msg.topic.split(\"/\")\n\nif (meterTopic[3] == flow.get(\"meter\")){\n    meas = msg.payload.split(\" \", 4)\n    \n    if(meas[0]==\"Current\"){\n        msg.topic = meas[1]\n        msg.payload = parseFloat(meas[3])\n        return msg;\n    }\n}\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 450,
+        "y": 400,
+        "wires": [
+            [
+                "6b22735d.f8ba8c"
+            ]
+        ]
+    },
+    {
+        "id": "1d27101.efb4cf",
+        "type": "function",
+        "z": "4212209b.e007d",
+        "name": "read_v",
+        "func": "meterTopic = msg.topic.split(\"/\")\n\nif (meterTopic[3] == flow.get(\"meter\")){\n    meas = msg.payload.split(\" \", 4)\n    \n    if(meas[0]==\"Voltage\"){\n        msg.topic = meas[1]\n        msg.payload = parseFloat(meas[3])\n        return msg;\n    }\n}\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 450,
+        "y": 440,
+        "wires": [
+            [
+                "f026ea18.078918"
+            ]
+        ]
+    },
+    {
+        "id": "6b22735d.f8ba8c",
+        "type": "ui_chart",
+        "z": "4212209b.e007d",
+        "name": "",
+        "group": "edbbdc1f.b0ac5",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "label": "Current (A)",
+        "chartType": "line",
+        "legend": "true",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "60",
+        "cutout": 0,
+        "useOneColor": false,
+        "colors": [
+            "#1f77b4",
+            "#008000",
+            "#ff7f0e",
+            "#f40000",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "useOldStyle": false,
+        "outputs": 1,
+        "x": 650,
+        "y": 400,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "3db21131.5d64fe",
+        "type": "change",
+        "z": "4212209b.e007d",
+        "name": "MeterChoice",
+        "rules": [
+            {
+                "t": "set",
+                "p": "meter",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 630,
+        "y": 140,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "8accf1f0.b331d",
+        "type": "ui_dropdown",
+        "z": "4212209b.e007d",
+        "name": "meterselect",
+        "label": "",
+        "tooltip": "Meter to read from",
+        "place": "Select meter",
+        "group": "e8aa5b0c.fe3d28",
+        "order": 1,
+        "width": 2,
+        "height": 1,
+        "passthru": true,
+        "options": [
+            {
+                "label": "Meter 0",
+                "value": "meter0",
+                "type": "str"
+            },
+            {
+                "label": "Meter 1",
+                "value": "meter1",
+                "type": "str"
+            },
+            {
+                "label": "Meter 2",
+                "value": "meter2",
+                "type": "str"
+            },
+            {
+                "label": "Meter 3",
+                "value": "meter3",
+                "type": "str"
+            }
+        ],
+        "payload": "",
+        "topic": "/meterchoose/",
+        "x": 290,
+        "y": 140,
+        "wires": [
+            [
+                "3db21131.5d64fe"
+            ]
+        ]
+    },
+    {
+        "id": "8a50e0b.6d4f32",
+        "type": "mqtt in",
+        "z": "4212209b.e007d",
+        "name": "Power",
+        "topic": "/ziggy/BuildingTeste/+/Power",
+        "qos": "1",
+        "datatype": "auto",
+        "broker": "18e3ce0.9131e32",
+        "x": 270,
+        "y": 520,
+        "wires": [
+            [
+                "2ad94ecf.ac24b2",
+                "e5d7be1f.41405",
+                "3b255b34.ba3514",
+                "569fc8d1.2dbd58",
+                "20dc30f9.f4a5a",
+                "c016b95c.70fb58"
+            ]
+        ]
+    },
+    {
+        "id": "e5d7be1f.41405",
+        "type": "function",
+        "z": "4212209b.e007d",
+        "name": "read_PA",
+        "func": "meterTopic = msg.topic.split(\"/\")\n\nif (meterTopic[3] == flow.get(\"meter\")){\n    meas = msg.payload.split(\" \", 4)\n    \n    if(meas[0]==\"Active\"){\n        msg.topic = meas[1]\n        msg.payload = parseFloat(meas[3])\n        return msg;\n    }\n}\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 460,
+        "y": 560,
+        "wires": [
+            [
+                "2f8e6f11.6b815"
+            ]
+        ]
+    },
+    {
+        "id": "2ad94ecf.ac24b2",
+        "type": "function",
+        "z": "4212209b.e007d",
+        "name": "read_PF",
+        "func": "meterTopic = msg.topic.split(\"/\")\n\nif (meterTopic[3] == flow.get(\"meter\")){\n    meas = msg.payload.split(\" \", 4)\n    \n    if(meas[0]==\"PF\"){\n        msg.topic = meas[1]\n        msg.payload = parseFloat(meas[3])\n        return msg;\n    }\n}\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 460,
+        "y": 600,
+        "wires": [
+            [
+                "e52ca755.49e5e8"
+            ]
+        ]
+    },
+    {
+        "id": "77f62f03.880ee",
+        "type": "ui_chart",
+        "z": "4212209b.e007d",
+        "name": "Apparent Power",
+        "group": "43534d39.313e94",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "label": "Apparent Power",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "useOldStyle": false,
+        "outputs": 1,
+        "x": 660,
+        "y": 520,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "e52ca755.49e5e8",
+        "type": "ui_chart",
+        "z": "4212209b.e007d",
+        "name": "Power Factor",
+        "group": "43534d39.313e94",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "label": "Power Factor",
+        "chartType": "bar",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "useOldStyle": false,
+        "outputs": 1,
+        "x": 650,
+        "y": 600,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "2f8e6f11.6b815",
+        "type": "ui_chart",
+        "z": "4212209b.e007d",
+        "name": "Active Power",
+        "group": "43534d39.313e94",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "label": "Active Power",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "useOldStyle": false,
+        "outputs": 1,
+        "x": 650,
+        "y": 560,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "3b255b34.ba3514",
+        "type": "function",
+        "z": "4212209b.e007d",
+        "name": "read_PT",
+        "func": "meterTopic = msg.topic.split(\"/\")\n\nif (meterTopic[3] == flow.get(\"meter\")){\n    meas = msg.payload.split(\" \", 4)\n    \n    if(meas[0]==\"Apparent\"){\n        msg.topic = meas[1]\n        msg.payload = parseFloat(meas[3])\n        return msg;\n    }\n}\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 460,
+        "y": 520,
+        "wires": [
+            [
+                "77f62f03.880ee"
+            ]
+        ]
+    },
+    {
+        "id": "1565b106.c9bcdf",
+        "type": "ui_gauge",
+        "z": "4212209b.e007d",
+        "name": "PF_A",
+        "group": "6fc09a1.fb1dc64",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "Power Factor A",
+        "label": "units",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "1",
+        "colors": [
+            "#ca3838",
+            "#e6e600",
+            "#00b500"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "x": 630,
+        "y": 660,
+        "wires": []
+    },
+    {
+        "id": "f89e5413.8f43f8",
+        "type": "ui_gauge",
+        "z": "4212209b.e007d",
+        "name": "PF_B",
+        "group": "6fc09a1.fb1dc64",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "Power Factor B",
+        "label": "units",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "1",
+        "colors": [
+            "#ca3838",
+            "#e6e600",
+            "#00b500"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "x": 630,
+        "y": 700,
+        "wires": []
+    },
+    {
+        "id": "eff3153f.5ba4f8",
+        "type": "ui_gauge",
+        "z": "4212209b.e007d",
+        "name": "PF_C",
+        "group": "6fc09a1.fb1dc64",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "Power Factor C",
+        "label": "units",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "1",
+        "colors": [
+            "#ca3838",
+            "#e6e600",
+            "#00b500"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "x": 630,
+        "y": 740,
+        "wires": []
+    },
+    {
+        "id": "322152bb.67309e",
+        "type": "ui_text",
+        "z": "4212209b.e007d",
+        "group": "e8aa5b0c.fe3d28",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "Date",
+        "format": "{{payload | date:\"medium\"}}",
+        "layout": "row-spread",
+        "x": 610,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "94bf682b.0e59d8",
+        "type": "inject",
+        "z": "4212209b.e007d",
+        "name": "",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "1",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 290,
+        "y": 180,
+        "wires": [
+            [
+                "322152bb.67309e"
+            ]
+        ]
+    },
+    {
+        "id": "569fc8d1.2dbd58",
+        "type": "function",
+        "z": "4212209b.e007d",
+        "name": "read_PFA",
+        "func": "meterTopic = msg.topic.split(\"/\")\n\nif (meterTopic[3] == flow.get(\"meter\")){\n    meas = msg.payload.split(\" \", 4)\n    \n    if(meas[0]==\"PF\" && meas[1] == \"A\"){\n        msg.payload = Math.abs(parseFloat(meas[3]))\n        return msg;\n    }\n}\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 460,
+        "y": 660,
+        "wires": [
+            [
+                "1565b106.c9bcdf"
+            ]
+        ]
+    },
+    {
+        "id": "20dc30f9.f4a5a",
+        "type": "function",
+        "z": "4212209b.e007d",
+        "name": "read_PFB",
+        "func": "meterTopic = msg.topic.split(\"/\")\n\nif (meterTopic[3] == flow.get(\"meter\")){\n    meas = msg.payload.split(\" \", 4)\n    \n    if(meas[0]==\"PF\" && meas[1] == \"B\"){\n        msg.payload = Math.abs(parseFloat(meas[3]))\n        return msg;\n    }\n}\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 460,
+        "y": 700,
+        "wires": [
+            [
+                "f89e5413.8f43f8"
+            ]
+        ]
+    },
+    {
+        "id": "c016b95c.70fb58",
+        "type": "function",
+        "z": "4212209b.e007d",
+        "name": "read_PFC",
+        "func": "meterTopic = msg.topic.split(\"/\")\n\nif (meterTopic[3] == flow.get(\"meter\")){\n    meas = msg.payload.split(\" \", 4)\n    \n    if(meas[0]==\"PF\" && meas[1] == \"C\"){\n        msg.payload = Math.abs(parseFloat(meas[3]))\n        return msg;\n    }\n}\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 470,
+        "y": 740,
+        "wires": [
+            [
+                "eff3153f.5ba4f8"
+            ]
+        ]
+    },
+    {
+        "id": "7256da11.c97164",
+        "type": "ui_text",
+        "z": "4212209b.e007d",
+        "group": "e8aa5b0c.fe3d28",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "Overvoltage",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "x": 630,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "786f45de.c74acc",
+        "type": "inject",
+        "z": "4212209b.e007d",
+        "name": "",
+        "topic": "",
+        "payload": "No",
+        "payloadType": "str",
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "x": 270,
+        "y": 220,
+        "wires": [
+            [
+                "7256da11.c97164"
+            ]
+        ]
+    },
+    {
+        "id": "19a1cadc.fbc135",
+        "type": "ui_text",
+        "z": "4212209b.e007d",
+        "group": "e8aa5b0c.fe3d28",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "Voltage sag ",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "x": 630,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "62d44457.052ffc",
+        "type": "ui_text",
+        "z": "4212209b.e007d",
+        "group": "e8aa5b0c.fe3d28",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "Overcurrent",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "x": 630,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "7adcc203.d8058c",
+        "type": "ui_text",
+        "z": "4212209b.e007d",
+        "group": "e8aa5b0c.fe3d28",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "Neutral mismatch",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "x": 650,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "a8c20448.1f0978",
+        "type": "inject",
+        "z": "4212209b.e007d",
+        "name": "",
+        "topic": "",
+        "payload": "A",
+        "payloadType": "str",
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "x": 270,
+        "y": 260,
+        "wires": [
+            [
+                "19a1cadc.fbc135"
+            ]
+        ]
+    },
+    {
+        "id": "b69c6e65.49e4d",
+        "type": "inject",
+        "z": "4212209b.e007d",
+        "name": "",
+        "topic": "",
+        "payload": "C",
+        "payloadType": "str",
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "x": 270,
+        "y": 300,
+        "wires": [
+            [
+                "62d44457.052ffc"
+            ]
+        ]
+    },
+    {
+        "id": "898cebff.569d58",
+        "type": "inject",
+        "z": "4212209b.e007d",
+        "name": "",
+        "topic": "",
+        "payload": "Yes",
+        "payloadType": "str",
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "x": 270,
+        "y": 340,
+        "wires": [
+            [
+                "7adcc203.d8058c"
+            ]
+        ]
+    },
+    {
+        "id": "18e3ce0.9131e32",
+        "type": "mqtt-broker",
+        "z": "",
+        "name": "Public-eclipse",
+        "broker": "mqtt://mqtt.eclipse.org",
+        "port": "1883",
+        "clientid": "",
+        "usetls": false,
+        "compatmode": false,
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": ""
+    },
+    {
+        "id": "edbbdc1f.b0ac5",
+        "type": "ui_group",
+        "z": "",
+        "name": "RMS",
+        "tab": "45912c5.cb220d4",
+        "order": 2,
+        "disp": true,
+        "width": "6",
+        "collapse": false
+    },
+    {
+        "id": "e8aa5b0c.fe3d28",
+        "type": "ui_group",
+        "z": "",
+        "name": "Info",
+        "tab": "45912c5.cb220d4",
+        "order": 1,
+        "disp": true,
+        "width": "5",
+        "collapse": false
+    },
+    {
+        "id": "43534d39.313e94",
+        "type": "ui_group",
+        "z": "",
+        "name": "Power",
+        "tab": "45912c5.cb220d4",
+        "order": 3,
+        "disp": true,
+        "width": "6",
+        "collapse": false
+    },
+    {
+        "id": "6fc09a1.fb1dc64",
+        "type": "ui_group",
+        "z": "",
+        "name": "Power Factor",
+        "tab": "45912c5.cb220d4",
+        "order": 4,
+        "disp": true,
+        "width": "5",
+        "collapse": false
+    },
+    {
+        "id": "45912c5.cb220d4",
+        "type": "ui_tab",
+        "z": "",
+        "name": "Dashboard",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    }
+]
