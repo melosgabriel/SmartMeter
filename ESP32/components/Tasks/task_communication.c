@@ -18,7 +18,6 @@ static char meterName[40]; /**< Topic prefix/meter identifier */
 
 // Values
 static EM_Meas testVal;
-//static EM_RMS rms;
 
 void task_communication(void *arg)
 {

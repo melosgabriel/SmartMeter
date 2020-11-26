@@ -51,8 +51,9 @@ void app_main()
     //* Initialize tasks
     xTaskCreate(task_communication, "Communication task for MQTT", 2048, NULL, 10, &xTaskCommHandle); // MQTT
     xTaskCreate(task_acquire, "Acquisition task for ADE7880", 4096, NULL, 10, &xTaskAcqHandle); // ADE7880
+    #if DEBUG
     xTaskCreate(test_function, "teste", 2048, NULL, 10, NULL);
-    
+    #endif
     
     // while(1){
     //     printf("\n\nI shall not be seen...\n\n");

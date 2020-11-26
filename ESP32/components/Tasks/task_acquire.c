@@ -9,8 +9,10 @@ TaskHandle_t xTaskCommHandle;
 
 void task_acquire(void * arg)
 {
-    int reg_val = 0;
+    #if DEBUG
     uint8_t val[4]= {0,0,0,0};
+    #endif
+    
     ESP_ERROR_CHECK(i2c_master_init());
     //EM_RMS rms;
     EM_Meas meas;
@@ -18,17 +20,21 @@ void task_acquire(void * arg)
 
     for(;;)
     {   
-        //ade_read_rms(&rms);
         ade_acquire(&meas);
-        reg_val = ade_read_reg(ADE_AWATT, val, 4);
+        #if DEBUG
+        ade_read_reg(ADE_AWATT, val, 4);
         printf("Value read: %d %d %d %d\n", val[0], val[1], val[2], val[3]); 
-        //printf("Value RMS: %f\n", rms.sVoltage.A); 
+        #endif 
 
         // Send values to the communication task
-        //xQueueSend( FIFO_Acq_to_Comm, &rms, 10 / portTICK_RATE_MS ); 
         xQueueSend( FIFO_Acq_to_Comm, &meas, 10 / portTICK_RATE_MS ); 
         xTaskNotify(xTaskCommHandle, ADE_MEASURE_OK, eSetBits); // Notify the other task
-        vTaskDelay(3000 / portTICK_RATE_MS);
+
+        #if DEBUG
+        vTaskDelay(3000 / portTICK_RATE_MS); // bigger delay for arduino
+        #else
+        vTaskDelay(500 / portTICK_RATE_MS);
+        #endif
     }
 
 }

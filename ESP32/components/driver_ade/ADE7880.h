@@ -27,7 +27,7 @@
 #define ACK_CHECK_DIS       0x0     /*!< I2C master will not check ack from slave */
 #define ACK_VAL             0x0         /*!< I2C ack value */
 #define NACK_VAL            0x1         /*!< I2C nack value */
-#define DEBUG               1
+#define DEBUG               0
 
 /** PGA Gains, must be 0, 1, 2, 4, 8 or 16 */ 
 #define ADE_PGA_IGAIN       0   /**< PGA1 */
@@ -190,7 +190,6 @@ void ade_acquire(EM_Meas * meas);
 
 /**
  * TODO:
- * Read power
  * Code harmonics
  * Code power quality
  * Code interruptions

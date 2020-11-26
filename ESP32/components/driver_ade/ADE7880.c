@@ -420,7 +420,7 @@ static float read_p(ade_reg_t addr)
 
 	reg_val = signextension(reg_val, 24);
 
-	return reg_val / 1092.0f; // (ADE_PMAX *  ADE_FULLSCALE_VAL / ADE_VOLTAGE_ATT * ADE_CURRENT_FULL);
+	return reg_val / 68.158523f; // (ADE_PMAX *  ADE_FULLSCALE_VAL / ADE_VOLTAGE_ATT * ADE_CURRENT_FULL);
 }
 
 /**
@@ -430,7 +430,7 @@ static float read_p(ade_reg_t addr)
  */
 static float read_pf(ade_reg_t addr)
 {
-	uint16_t reg_val = ade_read_reg_16(addr);
+	int16_t reg_val = ade_read_reg_16(addr);
 
 	return reg_val / 32768.0f;
 }
